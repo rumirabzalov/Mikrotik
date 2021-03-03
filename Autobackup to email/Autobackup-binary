@@ -1,0 +1,4 @@
+/system backup save name=email;
+/tool e-mail send to="example@gmail.com" subject=([/system identity get name]." backup") file=email.backup;
+
+:log info "Backup e-mail sent.";
