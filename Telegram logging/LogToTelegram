@@ -1,0 +1,42 @@
+# script by Virtue
+:delay 10
+:local timeNow [/system clock get time]
+:local logs
+:if ([:pick $timeNow 0 2] < 03) do={
+:local date [/system clock get date]
+:foreach h in=[/log find] do={
+:local htime [/log get $h time]
+:if (($htime ~ [:pick $date 0 6]) and ([:pick $htime 7 15] > ($timeNow - 00:01:00))) do={
+:set logs ($logs, $h)
+  }
+ }
+} else={
+:set logs [/log find time >= ($timeNow - 00:01:00)]
+}
+:if ([:len $logs] > 0 ) do={
+:local messages
+:foreach i in=$logs do={
+:local imessage [/log get $i message]
+:if ($imessage ~"telnet" and $imessage ~"logged in") do={} else={
+:local topics [/log get $i topics]
+:if ($topics ~"wireless" || $topics ~"warning" || $imessage ~"logged in" || $topics ~"error" || $topics ~"critical") do={
+:if ($imessage ~ "[0-F][0-F]:[0-F][0-F]:[0-F][0-F]:[0-F][0-F]:[0-F][0-F]:[0-F][0-F]") do={
+:foreach k in=[/ip dhcp-server lease find] do={
+:local mac [/ip dhcp-server lease get $k mac-address]
+:if ($imessage ~ "$mac") do={
+:set imessage ($imessage . " / " . [/ip dhcp-server lease get $k comment])
+      }
+     }
+    }
+:local currentTime [ /log get $i time ]
+:set messages ($messages.$currentTime." ".$imessage."%0A%0A")
+   }
+  }
+ }
+:if ([:len $messages] > 0 ) do={
+:local botID "bot1000075423:AAEYn0eWtjTRKKg_BGF7fQiY5UjrTsdMfhl"
+:local chatID "-1001422750080"
+:local mikname [/system  identity  get name]
+/tool fetch keep-result=no url="https://api.telegram.org/$botID/sendmessage?chat_id=$chatID&text= $mikname : %0A$messages"
+ }
+}
