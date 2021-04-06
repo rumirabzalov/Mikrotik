@@ -5,8 +5,8 @@
 local bot "123456789:TOKEN"
 #Write Group or chat
 local ChatID "-123456789"
-:local startBuf [:toarray [/log find message~"logged in" || message~"login failure" || message~" failure" || message~"down" || message~"link up" || message~"fcs" || message~"excessive" ]]
-:local removeThese {"telnet";"whatever string you want"}
+:local startBuf [:toarray [/log find message~"logged in" || message~"login failure" || message~" failure" || message~"down" || message~"link up" || message~"fcs" || message~"excessive" || message~"ISAKMP-SA" ]]
+:local removeThese {"telnet";"user admin logged"}
 # END SETUP
 
 # warn if schedule does not exist
